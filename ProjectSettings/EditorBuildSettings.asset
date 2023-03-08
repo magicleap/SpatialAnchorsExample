@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/SpatialAnchors.unity
+    guid: 38705de497a8555489dd79afcbf0eb83
+  m_configObjects:
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 044b7760986f50a478236fb0bede3e0b,
+      type: 2}
+    com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: b21811bfcc6fe954289164ddadf35797,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: e4714f9a32d0a244db8f1bbd0365ebde,
+      type: 2}
