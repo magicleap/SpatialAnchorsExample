@@ -137,7 +137,21 @@ public class SpatialAnchorsExample : MonoBehaviour
         }
 
         //Check if the user is localized. If they are not, clear existing bindings.
-        if (info.LocalizationStatus == MLAnchors.LocalizationStatus.NotLocalized)
+        if (info.LocalizationStatus == MLAnchors.LocalizationStatus.Localized)
+        {
+            //If we are in a new space clear the existing visuals and reset the search counter.
+            if (info.SpaceId != _localizedSpace)
+            {
+                ClearVisuals();
+                numberOfSearches = 0;
+                localizationStatus = "Localized into : " + info.SpaceId;
+                _localizedSpace = info.SpaceId;
+            }
+
+            //Search for spatial anchors in the current space.
+            SearchSpatialAnchors();
+        }
+        else
         {
             //Clear the old visuals
             ClearVisuals();
@@ -147,18 +161,7 @@ public class SpatialAnchorsExample : MonoBehaviour
             Debug.Log(localizationStatus);
             return;
         }
-
-        //If we are in a new space clear the existing visuals and reset the search counter.
-        if (info.SpaceId != _localizedSpace)
-        {
-            ClearVisuals();
-            numberOfSearches = 0;
-            localizationStatus = "Localized into : " + info.SpaceId;
-            _localizedSpace = info.SpaceId;
-        }
-
-        //Search for spatial anchors in the current space.
-        SearchSpatialAnchors();
+     
     }
 
     /// <summary>
@@ -202,15 +205,6 @@ public class SpatialAnchorsExample : MonoBehaviour
         if (!queryStatus.IsOk)
         {
             Debug.LogError("Could not get result " + queryStatus);
-            return false;
-        }
-
-        //Wait a search to make sure anchors are initialized
-        if (numberOfSearches <= 1)
-        {
-            Debug.LogWarning("Initializing Anchors");
-            //Search again
-            _searchNow = true;
             return false;
         }
 
