@@ -207,9 +207,9 @@ namespace PersistentContentExample
                     InputSubsystem.Extensions.MLHeadTracking.HeadTrackingStatus.Valid
                     && _currentLocalization.LocalizationStatus == MLSpace.Status.Localized)
                 {
-                    //UpdateAnchorsOnWorkerThread(QueryCenter.position, SearchRadius);
+                    var queryPosition = QueryCenter.position;
                     ThreadDispatcher.ScheduleWork(() =>
-                        UpdateAnchorsOnWorkerThread(QueryCenter.position, SearchRadius));
+                        UpdateAnchorsOnWorkerThread(queryPosition, SearchRadius));
                 }
 
                 _searchNow = false;
@@ -264,27 +264,11 @@ namespace PersistentContentExample
                 ThreadDispatcher.ScheduleMain(() =>
                     LogOnMainThread($"UpdateAnchorsOnWorkerThread: failed to query anchors: {queryStatus}",
                         LogType.Error));
+            }else{
+
+                ThreadDispatcher.ScheduleMain(() => UpdateAnchorsOnMainThread(result.anchors));
+
             }
-
-            // Since the anchor positions are returned on the perception frame, some anchor positions might not be initialized.
-            // In this instance, we skip the query until all of the anchor positions are valid.
-            foreach (MLAnchors.Anchor anchor in result.anchors)
-            {
-                if (anchor.Pose.rotation.x == 0
-                    && anchor.Pose.rotation.y == 0
-                    && anchor.Pose.rotation.z == 0
-                    && anchor.Pose.rotation.w == 0)
-                {
-                    ThreadDispatcher.ScheduleMain(() =>
-                        LogOnMainThread(
-                            $"UpdateAnchorsOnWorkerThread: Some anchors have invalid poses, This can happen.: {queryStatus}",
-                            LogType.Warning));
-
-                    return;
-                }
-            }
-
-            ThreadDispatcher.ScheduleMain(() => UpdateAnchorsOnMainThread(result.anchors));
         }
 
 
